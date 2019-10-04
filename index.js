@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const {
     port,
     masterPort,
-    sclavePort,
+    slavePort,
 } = process.env
 
 /**
@@ -29,7 +29,7 @@ const splitNumberByLimit = (limit, current, array = []) => {
     }
 }
 
-const callSclavesAPI = batches => batches.map(batch => (axios.get(`http://localhost:${sclavePort}/recieveData/dinamic/process/${batch}`)))
+const callslavesAPI = batches => batches.map(batch => (axios.get(`http://localhost:${slavePort}/recieveData/dinamic/process/${batch}`)))
 
 app.get('/recieveData/dinamic/process/:lines', async (req, res) => {
     console.log('started in port ' + port)
@@ -40,10 +40,10 @@ app.get('/recieveData/dinamic/process/:lines', async (req, res) => {
     try {
         const AllObjects = []
         let asyncPromises = []
-        //Delegating responsabilities to sclaves api
+        //Delegating responsabilities to slaves api
         if (numberOfLines > limit && port == masterPort) {
             const arrayNumbers = splitNumberByLimit(limit, numberOfLines)
-            asyncPromises = callSclavesAPI(arrayNumbers)
+            asyncPromises = callslavesAPI(arrayNumbers)
         }
 
         //executing number limit or less 
